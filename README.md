@@ -21,16 +21,16 @@ helm repo update
 helm install -n kube-system jxgh/kube-arch-webhook
 ```
 
-**Core Values:**
+## Core Values
+
+These are the values most likley that you want to change with the default values.
 
 ```yaml
-# The time to cache the architectures available for an image where the imagePullPolicy in the pod is IfNotPresent
-cacheTime: 7d
+# The time to cache the architectures available for an image where the imagePullPolicy in the pod is IfNotPresent. The duration is parsed by github.com/mashiike/longduration.
+ifNotPresentCacheTime: 7d
 
-pullAlwaysCacheTime: nil
-
-# The time to cache the architectures available for an image where the imagePullPolicy in the pod is Always. The default is not to cache.
-nonDefaultSchedulerName: kube-arch-scheduler
+# The time to cache the architectures available for an image where the imagePullPolicy in the pod is PullAlways. null means don't cache.
+pullAlwaysCacheTime: null
 
 # This is relevant if your Kubernetes pod does not have permissions to your private registries.
 # dockerconfig.json is a base64 encoded docker config file, it will be used
@@ -39,14 +39,32 @@ nonDefaultSchedulerName: kube-arch-scheduler
 # registry. If you are using a public registry, you can leave this empty.
 dockerConfigSecretName: ""
 
-# The tolerations or affinity to add to pod whose containers can run an architecture.
-architectures:
-  arm64:
-    tolerations:
-    - effect: NoExecute
-      key: ARM
-      operator: Equal
-      value: "true"      
+# The tolerations or affinity to add to pod whose containers can run an architecture. nodeAffinitySelectorTerms is added to affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
+architectures: {}
+# Example:
+#  arm64:
+#    tolerations:
+#    - effect: NoExecute
+#      key: ARM
+#      operator: Equal
+#      value: "true"
+#    nodeAffinitySelectorTerms:
+#    - matchExpressions:
+#      - key: kubernetes.io/arch
+#        operator: In
+#        values:
+#        - arm64
+
+
+# MutatingWebhookConfiguration, see https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector
+failurePolicy: Ignore
+namespaceSelector:
+  matchExpressions:
+  - key: kubernetes.io/metadata.name
+    operator: NotIn
+    values: [kube-system]
+objectSelector: {}
+reinvocationPolicy: IfNeeded
 ```
 
 ## Development
