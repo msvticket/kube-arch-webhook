@@ -1,4 +1,4 @@
-# NOTE: This README is a design schetch. No implementation is done
+# NOTE: This README is a design sketch. No implementation is done
 
 <h1 align="center">Kubernetes Architecture Mutating Admission Webhook</h1>
 <p align="center">An image architecture aware Kubernetes Mutating Admission Webhook</p>
