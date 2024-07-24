@@ -10,7 +10,7 @@
 <a  target="_blank"><img src="https://img.shields.io/github/go-mod/go-version/msvticket/kube-arch-webhook"/></a>
 </p>
 
-**kube-arch-webhook** is a kubernetes scheduler Mutating Admission Webhook that will add tolerations and/or affinity to pods based on the container image architectures (platforms) present in a Pod.
+**kube-arch-webhook** is a kubernetes Mutating Admission Webhook that will add tolerations and/or affinity to pods based on the container image architectures (platforms) present in a Pod.
 
 Pods that already has tolerations or affinities matching any of the configured ones will not be treated by the webhook. Containers with imagePullPolicy will not be considered.
 
