@@ -24,7 +24,7 @@ helm install -n kube-system jxgh/kube-arch-webhook
 
 ## Core Values
 
-These are the values most likley that you want to change with the default values.
+These are the values most likely that you want to change with the default values.
 
 ```yaml
 # The time to cache the architectures available for an image where the imagePullPolicy in the pod is IfNotPresent. The duration is parsed by github.com/mashiike/longduration.
