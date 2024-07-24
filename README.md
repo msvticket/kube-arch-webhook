@@ -40,22 +40,16 @@ pullAlwaysCacheTime: null
 # registry. If you are using a public registry, you can leave this empty.
 dockerConfigSecretName: ""
 
-# The tolerations or affinity to add to pod whose containers can run an architecture. nodeAffinitySelectorTerms is added to affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
+# The tolerations or affinity to add to pod whose containers can run an architecture. requireNodeLabels is added to affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms
 architectures: {}
 # Example:
 #  arm64:
-#    tolerations:
+#    taintsToTolerate: 
 #    - effect: NoExecute
 #      key: ARM
-#      operator: Equal
 #      value: "true"
-#    nodeAffinitySelectorTerms:
-#    - matchExpressions:
-#      - key: kubernetes.io/arch
-#        operator: In
-#        values:
-#        - arm64
-
+#    requireNodeLabels:
+#    - kubernetes.io/arch: arm64
 
 # MutatingWebhookConfiguration, see https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector
 failurePolicy: Ignore
@@ -81,3 +75,13 @@ You can use the [example deployment](example/busybox.yaml) in order to test the 
 ```
 kubectl deploy -f example/busybox.yaml
 ```
+
+## Open questions
+
+There are pods that should be ignored. Those that belong to a Daemonset certainly. Others?
+
+## Code to use or be inspired by
+
+- github.com/jellydator/ttlcache/v3
+- github.com/mashiike/longduration
+- https://github.com/kubernetes-sigs/karpenter/blob/c5467c08c07a93d2ff2b09c677a4152c14f19d1d/pkg/scheduling/taints.go#L41
