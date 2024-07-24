@@ -1,33 +1,35 @@
 
-<h1 align="center">Kubernetes Architecture Scheduler Plugin</h1>
-<p align="center">An image architecture aware Kubernetes scheduler plugin</p>
+<h1 align="center">Kubernetes Architecture Mutating Admission Webhook</h1>
+<p align="center">An image architecture aware Kubernetes Mutating Admission Webhook</p>
 
 <p align="center">
-<a  target="_blank"><img src="https://img.shields.io/github/v/release/elementtech/kube-arch-scheduler" /></a>
-<a  target="_blank"><img src="https://img.shields.io/github/downloads/elementtech/kube-arch-scheduler/total"/></a>
-<a  target="_blank"><img src="https://img.shields.io/github/issues/elementtech/kube-arch-scheduler"/></a>
-<a  target="_blank"><img src="https://img.shields.io/github/go-mod/go-version/elementtech/kube-arch-scheduler"/></a>
+<a  target="_blank"><img src="https://img.shields.io/github/v/release/msvticket/kube-arch-webhook" /></a>
+<a  target="_blank"><img src="https://img.shields.io/github/downloads/msvticket/kube-arch-webhook/total"/></a>
+<a  target="_blank"><img src="https://img.shields.io/github/issues/msvticket/kube-arch-webhook"/></a>
+<a  target="_blank"><img src="https://img.shields.io/github/go-mod/go-version/msvticket/kube-arch-webhook"/></a>
 </p>
 
-**kube-arch-scheduler** is a kubernetes scheduler filter plugin that will filter nodes by the compatibility of the container image architectures (platforms) present in a Pod. It can also assign weight to each architecture, so that pods can prefer sitting on a specific one.
+**kube-arch-webhook** is a kubernetes scheduler Mutating Admission Webhook that will add tolerations and/or affinity to pods based on the container image architectures (platforms) present in a Pod.
+
+Pods that already has tolerations or affinities matching any of the configured ones will not be treated by the webhook. Containers with imagePullPolicy will not be considered.
 
 ## Deploy - Helm
 
 ```bash
-helm repo add kube-arch-scheduler https://elementtech.github.io/kube-arch-scheduler/
+helm repo add jxgh https://elementtech.github.io/kube-arch-scheduler/
 helm repo update
-helm install -n kube-system kube-arch-scheduler/kube-arch-scheduler
+helm install -n kube-system jxgh/kube-arch-webhook
 ```
 
 **Core Values:**
 
 ```yaml
-# While enabled, this will add the scheduler to the default scheduler plugins,
-# this will make it affect all pods in the cluster.
-addToDefaultScheduler: true
+# The time to cache the architectures available for an image where the imagePullPolicy in the pod is IfNotPresent
+cacheTime: 7d
 
-# If addToDefaultScheduler if false, this will be the name of the scheduler,
-# and it will only affect pods with: [schedulerName: kube-arch-scheduler].
+pullAlwaysCacheTime: nil
+
+# The time to cache the architectures available for an image where the imagePullPolicy in the pod is Always. The default is not to cache.
 nonDefaultSchedulerName: kube-arch-scheduler
 
 # This is relevant if your Kubernetes pod does not have permissions to your private registries.
@@ -37,17 +39,14 @@ nonDefaultSchedulerName: kube-arch-scheduler
 # registry. If you are using a public registry, you can leave this empty.
 dockerConfigSecretName: ""
 
-# The weight of each architecture,
-# if a pod can sit on both, it will prefer the one with the higher weight.
-# The default weight of undefined architectures is 0, meaning none will have
-# any particular preference.
-weight:
-  amd64: 0
-  arm64: 0
-  arm: 0
-  ppc64le: 0
-  s390x: 0
-  riscv64: 0
+# The tolerations or affinity to add to pod whose containers can run an architecture.
+architectures:
+  arm64:
+    tolerations:
+    - effect: NoExecute
+      key: ARM
+      operator: Equal
+      value: "true"      
 ```
 
 ## Development
@@ -63,7 +62,3 @@ You can use the [example deployment](example/busybox.yaml) in order to test the 
 ```
 kubectl deploy -f example/busybox.yaml
 ```
-
-## Support
-
-<a href="https://www.buymeacoffee.com/elementtech" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
