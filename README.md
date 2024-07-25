@@ -84,4 +84,10 @@ There are pods that should be ignored. Those that belong to a Daemonset certainl
 
 - github.com/jellydator/ttlcache/v3
 - github.com/mashiike/longduration
+- https://github.com/viney-shih/go-cache
+- https://github.com/seaguest/cache
 - https://github.com/kubernetes-sigs/karpenter/blob/c5467c08c07a93d2ff2b09c677a4152c14f19d1d/pkg/scheduling/taints.go#L41
+
+  ## References
+
+  https://bshayr29.medium.com/build-your-own-admission-controllers-in-kubernetes-using-go-bef8ba38d595
