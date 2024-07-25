@@ -1,5 +1,7 @@
 # NOTE: This README is a design sketch. No implementation is done
 
+Maybe this should be incorporated in Karpenter. Then the nodepool selection could be done when the webhook is called and tolerations could he added based on the nodepool and affinity on architechture. Annotations could be added to the pod with information so that if it becomes pending Karpenter doesn't need to the repeat the work done during webhook evaluation.
+
 <h1 align="center">Kubernetes Architecture Mutating Admission Webhook</h1>
 <p align="center">An image architecture aware Kubernetes Mutating Admission Webhook</p>
 
